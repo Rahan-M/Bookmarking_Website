@@ -21,5 +21,5 @@ const bookMarkSchema = mongoose.Schema(
 );
 
 
-const bookMarkModel = mongoose.model("Bookmark", bookMarkSchema);
-export default bookMarkModel;
+const BookMark = mongoose.model("Bookmark", bookMarkSchema);
+export default BookMark;

@@ -1,12 +1,13 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './databse/db.js';
-import bookMarkModel from './schema/schema.js';
 import router from './routes/bookmarks.routes.js';
 dotenv.config();
 const app=express();
 
-app.use('/',router);
+app.use(express.json());
+
+app.use('/api',router);
 
 connectDB()
 .then(()=>{
