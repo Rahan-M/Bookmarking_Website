@@ -24,4 +24,14 @@ const deleteFolder = async (req, res) => {
   res.status(200).json({ success: true, data: deletedFolder });
 };
 
-export { getAllfolders, deleteFolder };
+const deleteAllFolders=async (req,res)=>{
+  try{
+    await Folder.deleteMany({});
+    return res.status(200).json({success:true, msg:"Collection Cleared Succesfully"})
+  }
+  catch{
+    return res.status(500).json({success:false,msg:"Some Error occured from our side"});
+  }
+}
+
+export { getAllfolders, deleteFolder ,deleteAllFolders};
