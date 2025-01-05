@@ -1,4 +1,4 @@
-import BookMark from "../models/models.js";
+import {BookMark, Folder} from "../models/models.js";
 import mongoose from "mongoose";
 
 const getBookMark = async (req, res) => {
@@ -9,6 +9,7 @@ const getBookMark = async (req, res) => {
   const bookmark = await BookMark.findById(id);
   res.status(200).json({ success: true, data: bookmark });
 };
+
 const getAll = async (req, res) => {
   const bookMarks = await BookMark.find({});
   if (bookMarks.length==0) {
@@ -38,8 +39,22 @@ const createBookMark = async (req, res) => {
       .status(400)
       .json({ success: false, msg: "Please fill all fields" });
   }
+  const requiredFolder = await Folder.find({ name: req.body.folder });
   const newBookMark = await BookMark.create(req.body);
-  res.status(200).json({ success: true, data: newBookMark });
+  console.log(requiredFolder[0].count);
+  const folder={name:req.body.folder,count:0};
+  const newFolder=  await Folder.create(folder);
+  // if(requiredFolder.length==0){
+  //   res.status(200).json({ success: true, data: newBookMark, folder:newFolder });
+  // }else{
+  //   const folder={name:req.body.folder,count:requiredFolder.count+1};
+  //   const id=requiredFolder.id;
+  //   const updatedFolder= await Folder.findByIdAndUpdate(id, folder, {
+  //     new: true,
+  //   });
+  //   res.status(200).json({ success: true, data: newBookMark, folder:updatedFolder });
+  // }
+  res.status(200).json({ success: true, data: newBookMark, folder:newFolder });
 };
 
 const deleteBookMark = async (req, res) => {

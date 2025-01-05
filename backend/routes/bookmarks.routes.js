@@ -6,11 +6,9 @@ import {
   deleteBookMark,
   getBookMark,
   updateBookMark
-} from "../controllers/booksmarks.controllers.js";
+} from "../controllers/bookmarks.controllers.js";
 const router = express.Router();
 router.route("/").post(createBookMark).get(getAll);
-router.route("/:folder").get(getFolder);
-router.route("/get/:id").get(getBookMark);
-router.route("/del/:id").delete(deleteBookMark);
-router.route("/upd/:id").put(updateBookMark);
+router.route("/:id").get(getBookMark).delete(deleteBookMark).put(updateBookMark);
+router.route("/folders/:folder").get(getFolder);
 export default router;
