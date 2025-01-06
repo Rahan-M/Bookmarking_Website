@@ -12,17 +12,51 @@ const getAllfolders = async (req, res) => {
 };
 
 const renameFolder = async (req, res) => {
-  const {id} = req.params;
-  const { newName } = req.body;
-  const updationJSON={name:newName};
-  const requiredFolder = await Folder.findById(id); // Returns document as it was before updation
-  const oldName = requiredFolder.name;
-  const updatedFolder = await Folder.findByIdAndUpdate(id, updationJSON, { new: true });
-  await BookMark.updateMany(
-    { folder: oldName },
-    { $set: { folder: newName } }
-  );
-  res.status(200).json({ success: true, data: updatedFolder });
+  try {
+    const { id } = req.params;
+    const { newName } = req.body;
+    const oldFolder = await Folder.findById(id); // Returns document as it was before updation
+    const folder = await Folder.findOne({ name: newName });
+    if (folder) {
+      if (oldFolder.name == newName) {
+        return res.status(200).json({ success: true, data: folder });
+      } 
+      // We are going to delete the old folder, then add all documents to the existing folder and update its count;
+      const deletedFolder = await Folder.findByIdAndDelete(id); // Returns document as it was before deletion
+      const oldName = deletedFolder.name;
+      const oldCount = deletedFolder.count;
+      const updatedFolder = await Folder.findByIdAndUpdate(
+        folder._id,
+        { $inc: { count: oldCount } },
+        { new: true }
+      );
+      await BookMark.updateMany(
+        { folder: oldName },
+        { $set: { folder: newName } }
+      );
+      return res
+        .status(200)
+        .json({ success: true, data: updatedFolder, preExists: true });
+    } else {
+      const updationJSON = { name: newName };
+      const oldName = oldFolder.name;
+      const updatedFolder = await Folder.findByIdAndUpdate(id, updationJSON, {
+        new: true,
+      });
+      await BookMark.updateMany(
+        { folder: oldName },
+        { $set: { folder: newName } }
+      );
+      return res
+        .status(200)
+        .json({ success: true, data: updatedFolder, preExists: false });
+    }
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Some error occured on our side" });
+  }
 };
 
 const deleteFolder = async (req, res) => {
