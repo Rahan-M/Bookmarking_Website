@@ -5,7 +5,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily:{
+        oswald:['Oswald','sans-serif'],
+        orbitron:['Orbitron','sans-serif'],
+        open:['Open Sans','sans-serif'],
+        archivo:['Archivo Black','sans-serif']
+      }
+    },
   },
   plugins: [],
 }
