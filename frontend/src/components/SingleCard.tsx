@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import Spinner from './spinner';
+import { Link } from 'react-router-dom';
+import { FaEdit } from "react-icons/fa";
 
 interface folderProps{
   folder: string;
@@ -36,12 +38,17 @@ const SingleCard = ({folder}:folderProps) => {
   },[]);
 
   return (
-    <div className='border'>
+    <div className='border w-[25vw] h-[25vh] border-black rounded-md m-5 p-3 bg-[#FFFFC7]'>
       {loading && <Spinner />}
-      <h2>{folder}</h2>
+      <div className='title flex justify-between items-center mb-3'>
+        <h1 className='text-3xl text-center'>{folder}</h1>
+        <Link to={`/folders/rename/${encodedFolder}`}>
+          <FaEdit className='text-2xl'/>
+        </Link>
+      </div>
       <ul className="list">
         {bookMarks.map((bookMark, index)=>( // If this bracket was curly then we'll have to return explicitly
-          <li key={index}>{bookMark.name}</li>
+          <li key={index} className='text-xl mb-2'>{bookMark.name}</li>
         ))}
       </ul>
     </div>

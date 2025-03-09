@@ -38,17 +38,18 @@ const Home = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <Navbar />
-      <div className="icons">
-        <Link to="/folders/create">
-          <MdOutlineCreateNewFolder className="absolute right-0 mr-4 mt-2 text-5xl text-blue-500" />
-        </Link>
-      </div>
-      {loading && <Spinner />}
-      <Cards folders={folders}/>
-    </>
+        <div className="icons">
+          <Link to="/folders/create">
+            <MdOutlineCreateNewFolder className="absolute right-0 mr-4 mt-2 text-5xl text-blue-500" />
+          </Link>
+        </div>
+        {loading && <Spinner />}
+        <Cards folders={folders}/>
+    </div>
   );
+
 };
 
 export default Home;
