@@ -1,6 +1,7 @@
 import SingleCard from './SingleCard'
 import { Link } from 'react-router-dom';
 interface folderType{
+    _id:string;
     name: string;
     count:number;
 }

@@ -7,9 +7,9 @@ import Spinner from "../components/spinner";
 import Cards from "../components/Cards";
 
 interface folderType{
+  _id:string;
   name: string;
   count:number;
-  _id:string;
 }
 
 interface apiResponse{ // Single element in the array

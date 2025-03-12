@@ -39,10 +39,12 @@ const SingleCard = ({folder}:folderProps) => {
 
   return (
     <div className='border w-[25vw] h-[25vh] border-black rounded-md m-5 p-3 bg-[#FFFFC7]'>
-      {loading && <Spinner />}
+      <div className='relative bottom-[17rem]'>
+        {loading && <Spinner/>}
+      </div>
       <div className='title flex justify-between items-center mb-3'>
         <h1 className='text-3xl text-center'>{folder}</h1>
-        <Link to={`/folders/rename/${encodedFolder}`}>
+        <Link to={`/folders/rename/${folder}`}>
           <FaEdit className='text-2xl'/>
         </Link>
       </div>

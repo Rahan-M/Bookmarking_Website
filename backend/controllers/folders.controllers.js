@@ -16,6 +16,23 @@ const getAllfolders = async (req, res) => {
   }
 };
 
+const getFolderId=async(req, res)=>{
+  try {
+    const {newName}=req.body;
+    const folder = await Folder.findOne({name:newName});
+    if (!folder) {
+      return res.status(400).json({
+        success: false,
+        msg: "Your folders will be visible once it's created",
+      });
+    }
+    return res.status(200).json({ success: true, data: folder._id });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, msg: "Server Error" });
+  }
+}
+
 const renameFolder = async (req, res) => {
   try {
     const { id } = req.params;
@@ -92,4 +109,4 @@ const deleteAllFolders = async (req, res) => {
   }
 };
 
-export { getAllfolders, deleteFolder, deleteAllFolders, renameFolder };
+export { getAllfolders, deleteFolder, deleteAllFolders, renameFolder, getFolderId };
