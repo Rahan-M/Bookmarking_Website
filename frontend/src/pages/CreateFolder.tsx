@@ -14,7 +14,6 @@ const CreateFolder = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const saveBookMark = () => {
-    console.log("Save Bookmark Ran")
     const data = {
       name,
       link,
