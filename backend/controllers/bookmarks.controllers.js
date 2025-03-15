@@ -107,6 +107,23 @@ const deleteBookMark = async (req, res) => {
   }
 };
 
+const getBookMarkId=async(req, res)=>{
+  try {
+    const {name}=req.body;
+    const bookMark = await BookMark.findOne({name:name});
+    if (!bookMark) {
+      return res.status(400).json({
+        success: false,
+        msg: "Your folders will be visible once it's created",
+      });
+    }
+    return res.status(200).json({ success: true, data: bookMark._id });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, msg: "Server Error" });
+  }
+}
+
 const updateBookMark = async (req, res) => {
   try {
     const { id } = req.params;

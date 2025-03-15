@@ -18,8 +18,8 @@ const getAllfolders = async (req, res) => {
 
 const getFolderId=async(req, res)=>{
   try {
-    const {newName}=req.body;
-    const folder = await Folder.findOne({name:newName});
+    const {name}=req.body;
+    const folder = await Folder.findOne({name:name});
     if (!folder) {
       return res.status(400).json({
         success: false,
