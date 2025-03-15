@@ -3,9 +3,15 @@ import { useEffect, useState, useRef } from 'react'
 import Spinner from './spinner';
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
+import { MdOutlineFolderDelete } from "react-icons/md";
+import { useSnackbar } from 'notistack';
 
-interface folderProps{
-  folder: string;
+interface Props{
+  folder: {
+    _id:string
+    name: string;
+  };
+  onDelete: (id: string) => void;
 }
 
 interface bookMarqType{
@@ -20,11 +26,15 @@ interface apiResponse{ // Single element in the array
   success:boolean;
 }
 
-const SingleCard = ({folder}:folderProps) => {
+const SingleCard: React.FC<Props> = ({folder, onDelete}) => {
   const [bookMarks, setBookMarks]=useState<bookMarqType[]>([]);
   const [loading, setLoading]=useState(false);
+  const [loading2, setLoading2]=useState(false);
   const [visibleCount, setVisibleCount] = useState(0);
-  const encodedFolder= encodeURIComponent(folder);
+  const encodedFolder= encodeURIComponent(folder.name);
+  const [showPopup, setShowPopup] = useState(false);
+  const {enqueueSnackbar}=useSnackbar();
+
   useEffect(()=>{
     setLoading(true);
     axios.get<apiResponse>(`http://localhost:5000/api/bookmarks/folders/${encodedFolder}`)
@@ -50,16 +60,63 @@ const SingleCard = ({folder}:folderProps) => {
     const itemHeight=36;
     setVisibleCount(Math.floor(availableHeight/itemHeight));
   },[bookMarks])
+
+  const handleDelete= async()=>{
+    setLoading2(true);
+    try{
+      await axios.delete(`http://localhost:5000/api/folders/${folder._id}`);
+      enqueueSnackbar("Folder Deleted Succesfully", { variant: "success" });
+      onDelete(folder._id);
+    }
+    catch(error){
+      console.error("Error deleting bookmark:", error);
+      enqueueSnackbar("An Error Occured. Try Again.", { variant: "error" });
+    }
+    finally{
+      setShowPopup(false);
+      setLoading2(false);
+    }
+  }
+
+  const deleteConfirmation=()=>{
+    if(!showPopup) return null;
+    return (
+      <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
+        {loading2 && <div className='fixed inset-0 bg-black bg-opacity-50'><Spinner/></div>}
+        <div className='bg-white h-[20vh] rounded-lg p-6 flex flex-col'>
+          <p className='text-lg'>
+              Are you sure you want to delete the bookmark <b>{folder.name}</b>
+          </p>
+          <div className="buttons flex justify-around items-center mt-5">
+            <button disabled={loading2} className='bg-red-500 text-white px-10 py-2 rounded-lg' onClick={()=>{
+              handleDelete();
+            }}>Yes</button>
+            <button className='bg-gray-400 px-10 py-2 rounded-lg' onClick={()=>{
+              setShowPopup(false);
+            }}>No</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div ref={maindivRef} className='border w-[25vw] h-[25vh] border-black rounded-md m-5 p-3 bg-[#c2f1fc]'>
       <div className='relative bottom-[17rem]'>
         {loading && <Spinner/>}
       </div>
       <div ref={titledivRef} className='title flex justify-between items-center mb-3'>
-        <h1 className='text-3xl text-center'>{folder}</h1>
-        <Link to={`/folders/rename/${folder}`}>
-          <FaEdit className='text-2xl'/>
+        <Link to={`/folders/${encodedFolder}`}>
+          <h1 className='text-3xl text-center'>{folder.name}</h1>
         </Link>
+        <div className="icons flex items-center">
+          <MdOutlineFolderDelete className="mr-4 text-3xl cursor-pointer" onClick={()=>{
+            setShowPopup(true);
+          }}/>
+          <Link to={`/folders/rename/${folder.name}`}>
+            <FaEdit className='text-2xl'/>
+          </Link>
+        </div>
       </div>
       <div  >
         <ul className="list">
@@ -68,6 +125,7 @@ const SingleCard = ({folder}:folderProps) => {
           ))}
         </ul>
       </div>
+      {deleteConfirmation()}
     </div>
   )
 }

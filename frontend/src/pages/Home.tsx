@@ -2,10 +2,10 @@ import Navbar from "../components/Navbar";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import axios from "axios";
 import Spinner from "../components/spinner";
-import Cards from "../components/Cards";
-
+import SingleCard from "../components/SingleCard";
 interface folderType{
   _id:string;
   name: string;
@@ -37,6 +37,10 @@ const Home = () => {
       });
   }, []);
 
+  const handleDelete=(id:string)=>{
+    setFolders((prevFLDs)=> prevFLDs.filter((fld) => fld._id!==id));
+  }
+
   return (
     <div>
       <Navbar />
@@ -46,7 +50,13 @@ const Home = () => {
           </Link>
         </div>
         {loading && <Spinner />}
-        <Cards folders={folders}/>
+        <div className='flex mt-16'>
+        {folders.map((folder)=>{
+            return(
+                <SingleCard onDelete={handleDelete} folder={folder}/>
+            )
+        })}
+    </div>
     </div>
   );
 
