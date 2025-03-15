@@ -1,4 +1,4 @@
-import axios, { all } from 'axios'
+import axios from 'axios'
 import { useEffect, useState, useRef } from 'react'
 import Spinner from './spinner';
 import { Link } from 'react-router-dom';
