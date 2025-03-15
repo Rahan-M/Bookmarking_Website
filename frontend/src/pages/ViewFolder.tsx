@@ -42,6 +42,11 @@ const ViewFolder = () => {
   const handleDelete=(id:string)=>{
     setBookmarks((prevBMs)=> prevBMs.filter((bm) => bm._id!==id));
   }
+  const handleUpdate = (id: string, updatedData: bookMarqType) => {
+    setBookmarks((prevBMs) =>
+      prevBMs.map((bm) => (bm._id === id ? { ...bm, ...updatedData } : bm))
+    );
+  };
   return (
     <>
         <Navbar/>
@@ -53,6 +58,7 @@ const ViewFolder = () => {
                   key={bookmark._id} 
                   bookMarq={bookmark} 
                   onDelete={handleDelete}
+                  onUpdate={handleUpdate}
                 />
                 ))
             }
