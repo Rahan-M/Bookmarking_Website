@@ -25,7 +25,6 @@ const ViewFolder = () => {
       console.log("Returned\n");
       return;
     } 
-    const decodedName=decodeURIComponent(name);
     setLoading(true);
     axios
     .get<apiResponse>(
@@ -40,6 +39,9 @@ const ViewFolder = () => {
           setLoading(false);
         });
       }, [name]);
+  const handleDelete=(id:string)=>{
+    setBookmarks((prevBMs)=> prevBMs.filter((bm) => bm._id!==id));
+  }
   return (
     <>
         <Navbar/>
@@ -47,7 +49,11 @@ const ViewFolder = () => {
         <div className="cards flex">
             {
                 bookmarks.map((bookmark)=>(
-                    <BookMarqCard bookMarq={bookmark}/>
+                  <BookMarqCard 
+                  key={bookmark._id} 
+                  bookMarq={bookmark} 
+                  onDelete={handleDelete}
+                />
                 ))
             }
         </div>

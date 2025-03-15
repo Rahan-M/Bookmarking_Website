@@ -43,9 +43,9 @@ const SingleCard = ({folder}:folderProps) => {
   const titledivRef=useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
-    if(!maindivRef || !titledivRef) return;
     const height=maindivRef.current?.clientHeight;
     const titleHeight=titledivRef.current?.clientHeight;
+    if(!height || !titleHeight) return;
     const availableHeight=height-titleHeight;
     const itemHeight=36;
     setVisibleCount(Math.floor(availableHeight/itemHeight));
