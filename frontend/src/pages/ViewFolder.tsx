@@ -51,7 +51,7 @@ const ViewFolder = () => {
     <>
         <Navbar/>
         {loading && <Spinner/>}
-        <div className="cards flex">
+        <div className="cards flex flex-wrap justify-start mx-auto max-w-[90%]">
             {
                 bookmarks.map((bookmark)=>(
                   <BookMarqCard 

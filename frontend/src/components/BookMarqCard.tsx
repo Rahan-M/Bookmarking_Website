@@ -135,9 +135,14 @@ const BookMarqCard: React.FC<Props> = ({bookMarq, onDelete, onUpdate}) => {
               className="border-2 border-gray-500 px-2 md:px-4 py-2 w-[70vw] md:w-96"
             />
           </div>
+          <div className="buttons">
           <button disabled={loading2} className="p-2 bg-sky-300 m-8 rounded-lg w-52 font-archivo text-slate-100 text-2xl" onClick={handleUpdate}>
-          Update It!
-        </button>
+            Update It!
+          </button>
+          <button className='p-2 bg-red-300 m-8 rounded-lg w-52 font-archivo text-slate-100 text-2xl' onClick={()=>{
+            setUpdPopup(false);
+          }}>Cancel</button>
+          </div>
       </div>
     </div>
     )
@@ -145,7 +150,7 @@ const BookMarqCard: React.FC<Props> = ({bookMarq, onDelete, onUpdate}) => {
   
   return (
     <>
-      <div className='border border-black flex flex-col justify-between items-center text-2xl h-[20vh] w-[20vw] p-6 m-10 rounded-md color bg-[#c2f1fc]'>
+      <div className='border border-black flex flex-col justify-between items-center text-2xl h-[20vh] w-[17vw] p-6 m-10 rounded-md color bg-[#c2f1fc]'>
         <div className="icons flex justify-between w-[100%]">
           <MdDelete onClick={()=>{
             setShowPopup(true);
