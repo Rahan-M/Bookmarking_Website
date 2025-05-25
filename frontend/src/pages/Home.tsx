@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
