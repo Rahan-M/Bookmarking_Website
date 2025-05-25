@@ -1,8 +1,60 @@
+import { useEffect, useRef, useState } from "react";
 import logo from "../assets/logo.png";
 import { FaUserCircle } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Link } from 'react-router-dom';
+import { IoIosArrowDropdown } from "react-icons/io";
+
 const Navbar = () => {
+  const [showDropDown, setShowDropDown]=useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const profileRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(()=>{ 
+    /* 
+      We define event listeners and event handlers inside useEffect
+      Even though the useEffect function itself runs only once, 
+      the event listener you set up inside it persists until you 
+      explicitly remove it (or the component unmounts and the cleanup 
+      function runs)
+    */
+
+    const handleOutsideClick=(event: MouseEvent)=>{
+      if(event.target instanceof Node &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      )
+        setShowDropDown(false);
+    }
+
+    document.addEventListener("mousedown",handleOutsideClick);
+    // click = mousedown + mouseup
+
+    return ()=>{ // Return function runs when component unmounts or when effect is rerun 
+      document.removeEventListener("mousedown", handleOutsideClick);
+    }
+  },[])
+  const AccountDropDown=()=>{
+    if(!showDropDown) return null;
+    return (
+      <div ref={dropdownRef} className="bg-slate-300 w-[15rem] fixed right-7 z-10 top-9 text-center border border-solid border-black rounded-md">
+        <div className="menu">
+          <div className="border-b border-dashed border-black">
+            <Link to="/register">
+              <h1 className="h-[2rem] mt-2 ">Register</h1>
+            </Link>
+          </div>
+          <div>
+            <Link to="/login">
+              <h1 className="h-[2rem] mt-2">Login</h1>
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
   return (
     <>
     <div className="bg-gradient-to-br from-cyan-500 to-blue-500 flex justify-between h-14 items-center">
@@ -13,10 +65,12 @@ const Navbar = () => {
           <h1 className="font-bold text-3xl pb-2 text-white md:text-4xl">BookMarq</h1>
         </div>
       </Link>
-      <Link to="/register">
-        <FaUserCircle className="pr-3 text-5xl md:pr-5 md:text-6xl" color="white" />
-      </Link>
+      <div ref={profileRef} className="flex items-center pr-3  md:pr-5 cursor-pointer" onClick={()=>{setShowDropDown(true)}} >
+        <FaUserCircle className="text-5xl md:text-5xl" color="white"/>
+        <IoIosArrowDropdown className="text-2xl ml-2" color="white"/>
+      </div>
     </div>
+    {AccountDropDown()}
     </>
   );
 };

@@ -150,7 +150,7 @@ const BookMarqCard: React.FC<Props> = ({bookMarq, onDelete, onUpdate}) => {
   
   return (
     <>
-      <div className='border border-black flex flex-col justify-between items-center text-2xl h-[20vh] w-[17vw] p-6 m-10 rounded-md color bg-[#c2f1fc]'>
+      <div className='border border-black flex flex-col justify-between items-center text-2xl h-[15vh] w-[17vw] p-6 m-10 rounded-md color bg-[#c2f1fc]'>
         <div className="icons flex justify-between w-[100%]">
           <MdDelete onClick={()=>{
             setShowPopup(true);
