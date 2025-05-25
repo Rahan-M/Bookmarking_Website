@@ -36,7 +36,7 @@ const CreateFolder = () => {
   return (
     <>
       <Navbar />
-      <div className="container flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <h1 className="text-5xl font-bold mt-4 text-blue-600 font-oswald">
           Create Book
         </h1>

@@ -13,7 +13,9 @@ const Navbar = () => {
           <h1 className="font-bold text-3xl pb-2 text-white md:text-4xl">BookMarq</h1>
         </div>
       </Link>
-      <FaUserCircle className="pr-3 text-5xl md:pr-5 md:text-6xl" color="white" />
+      <Link to="/register">
+        <FaUserCircle className="pr-3 text-5xl md:pr-5 md:text-6xl" color="white" />
+      </Link>
     </div>
     </>
   );

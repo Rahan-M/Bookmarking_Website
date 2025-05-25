@@ -157,7 +157,7 @@ const BookMarqCard: React.FC<Props> = ({bookMarq, onDelete, onUpdate}) => {
           }} className='cursor-pointer'/>
           <FaEdit onClick={()=>{
             setUpdPopup(true);
-          }}/>
+          }} className='cursor-pointer'/>
         </div>
         <a href={bookMarq.link} target="_blank" rel="noopener noreferrer">
           <div className='text-center pb-6'>{bookMarq.name}</div>

@@ -114,7 +114,7 @@ const SingleCard: React.FC<Props> = ({folder, onDelete}) => {
             setShowPopup(true);
           }}/>
           <Link to={`/folders/rename/${folder.name}`}>
-            <FaEdit className='text-2xl'/>
+            <FaEdit className='text-2xl cursor-pointer'/>
           </Link>
         </div>
       </div>
