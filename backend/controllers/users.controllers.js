@@ -1,4 +1,4 @@
-import { User } from "../models/models";
+import { User } from "../models/models.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 
@@ -23,7 +23,7 @@ const generateToken=(user)=> {
   return token;
 }
 
-const createFolder = async (req, res) => {
+const createUser = async (req, res) => {
   try {
     if (!req.body.name || !req.body.email || !req.body.password) {
       return res
@@ -49,3 +49,5 @@ const createFolder = async (req, res) => {
     return res.status(500).json({ success: false, msg: "Server Error While Registering User" });
   }
 };
+
+export {createUser};

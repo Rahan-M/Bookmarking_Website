@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import connectDB from './databse/db.js';
 import bookmarksRouter from './routes/bookmarks.routes.js';
 import foldersRouter from './routes/folders.routes.js';
+import usersRouter from './routes/users.routes.js';
 import cors from 'cors';
 dotenv.config();
 const app=express();
@@ -18,6 +19,7 @@ app.use(cors(corsOptions));
 
 app.use('/api/bookmarks',bookmarksRouter);
 app.use('/api/folders',foldersRouter);
+app.use('/api/user', usersRouter);
 
 connectDB()
 .then(()=>{

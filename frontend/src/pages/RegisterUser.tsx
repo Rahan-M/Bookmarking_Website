@@ -1,5 +1,29 @@
+import { useState } from "react";
 import Navbar from "../components/navbar";
+import { useSnackbar } from "notistack";
+import axios from "axios";
 const RegisterUser=()=>{
+    const [name, setName]=useState("");
+    const [email, setEmail]=useState("");
+    const [password1, setPassword1]=useState("");
+    const [password2, setPassword2]=useState("");
+    const [loading, setLoading]=useState(false);
+    const {enqueueSnackbar}= useSnackbar();
+
+    const registerUserFxn=async ()=>{
+        if(password1!=password2){
+            enqueueSnackbar("Passwords Don't Match", { variant: "error" });
+            return null;
+        }
+
+        const data={
+            name,
+            email,
+            password1
+        }
+        setLoading(true);
+        const res=await axios.post("http://localhost:5000/api/users", data);
+    }
     return(
         <>
             <Navbar/>
@@ -10,39 +34,47 @@ const RegisterUser=()=>{
                 <div className="flex flex-col items-center justify-center h-[50vh] md:h-[60vh] w-[80vw] md:w-[40vw] border-4 rounded-3xl border-black mt-24 md:mt-12">
                     <div className="nameInp flex my-5 md:my-3 flex-col items-start"> 
                         <label htmlFor="" className="name font-orbitron">
-                        Enter Name :
+                            Enter Name :
                         </label>
                         <input
-                        type="text"
-                        className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
+                            type="text"
+                            value={name}
+                            onChange={(e)=>setName(e.target.value)}
+                            className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
                         />
                     </div>
                     <div className="nameInp flex my-5 md:my-3 flex-col items-start"> 
                         <label htmlFor="" className="name font-orbitron">
-                        Enter Email :
+                            Enter Email :
                         </label>
                         <input
-                        type="text"
-                        className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
+                            type="text"
+                            value={email}
+                            onChange={(e)=>setEmail(e.target.value)}
+                            className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
                         />
                     </div>
                     <div className="nameInp flex my-5 md:my-3 flex-col items-start"> 
                         <label htmlFor="" className="name font-orbitron">
-                        Enter Password :
+                            Enter Password :
                         </label>
                         <input
-                        type="text"
-                        className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
+                            type="text"
+                            value={password1}
+                            onChange={(e)=>setPassword1(e.target.value)}
+                            className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
                         />
                         <label htmlFor="" className="name font-orbitron">
-                        Confirm Password :
+                            Confirm Password :
                         </label>
                         <input
-                        type="text"
-                        className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
+                            type="text"
+                            value={password2}
+                            onChange={(e)=>setPassword2(e.target.value)}
+                            className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
                         />
                     </div>
-                    <button className="p-2 bg-sky-300 m-8 rounded-lg w-52 font-archivo text-slate-100 text-2xl" >
+                    <button className="p-2 bg-sky-300 m-8 rounded-lg w-52 font-archivo text-slate-100 text-2xl" onClick={registerUserFxn} >
                         Register
                     </button>
                 </div>
