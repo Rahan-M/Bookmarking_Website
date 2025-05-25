@@ -36,6 +36,27 @@ const folderSchema = mongoose.Schema(
   }
 );
 
+const userSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: Number,
+      required: true,
+    },
+    passwordHash: {
+      type:String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const BookMark = mongoose.model("Bookmark", bookMarkSchema);
 const Folder = mongoose.model("Folder", folderSchema);
-export { BookMark, Folder };
+const User = mongoose.model("User", userSchema);
+export { BookMark, Folder, User };
