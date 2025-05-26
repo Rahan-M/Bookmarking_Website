@@ -19,7 +19,7 @@ app.use(cors(corsOptions));
 
 app.use('/api/bookmarks',bookmarksRouter);
 app.use('/api/folders',foldersRouter);
-app.use('/api/user', usersRouter);
+app.use('/api/users', usersRouter);
 
 connectDB()
 .then(()=>{

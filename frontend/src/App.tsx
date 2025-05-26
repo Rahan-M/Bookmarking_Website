@@ -5,7 +5,7 @@ import RenameFolder from './pages/RenameFolder'
 import ViewFolder from './pages/ViewFolder'
 import RegisterUser from './pages/RegisterUser'
 import LoginUser from './pages/LoginUser'
-import { AuthProvider } from './context/AuthContent'
+import { AuthProvider } from './context/AuthContext'
 const App = () => {
   return (
     <>

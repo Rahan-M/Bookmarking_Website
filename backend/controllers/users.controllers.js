@@ -34,16 +34,18 @@ const createUser = async (req, res) => {
     const userData={
         name:req.body.name,
         email:req.body.email,
-        password: hashedPassword
+        passwordHash: hashedPassword
     }
     const newUser = await User.create(userData);
     const returnData={
         token:generateToken(newUser),
-        userI:newUser._id,
-        email:newUser.email
+        user:{
+          _id:newUser._id,
+          name:newUser.name,
+          email:newUser.email,
+        }
     }
     return res.status(200).json({success:true, data:returnData});
-    // return whatever is required
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, msg: "Server Error While Registering User" });

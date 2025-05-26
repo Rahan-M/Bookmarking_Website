@@ -1,11 +1,14 @@
 import Navbar from "../components/navbar";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import axios from "axios";
 import Spinner from "../components/spinner";
 import SingleCard from "../components/SingleCard";
+
+import { AuthContext } from "../context/AuthContext";
+
 interface folderType{
   _id:string;
   name: string;
@@ -18,24 +21,36 @@ interface apiResponse{ // Single element in the array
 }
 
 const Home = () => {
+  const [name, setName]=useState("");
   const [folders, setFolders] = useState<folderType[]>([]);
   const [loading, setLoading] = useState(false);
+  const {user}=useContext(AuthContext);
+  
+  
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get<apiResponse>(
-        `http://localhost:5000/api/folders`
-      )
-      .then((res) => {
+    if(user){
+      setName(user.name);
+      console.log("name set to ", user.name);
+    }
+
+    const fetchData=async()=>{
+      setLoading(true);
+      try{
+        const res=await axios
+        .get<apiResponse>(
+          `http://localhost:5000/api/folders`
+        ) 
         const allFolders = res.data.data;
         setFolders(allFolders);
-        setLoading(false);
-      })
-      .catch((err) => {
+      }catch(err){
         console.error(err);
+      }finally{
         setLoading(false);
-      });
-  }, []);
+      }
+    }
+     
+    fetchData();
+  }, [user]);
 
   const handleDelete=(id:string)=>{
     setFolders((prevFLDs)=> prevFLDs.filter((fld) => fld._id!==id));
@@ -57,6 +72,7 @@ const Home = () => {
             )
         })}
       </div>
+      {name && <h1>Hello {name}</h1>}
     </div>
   );
 
