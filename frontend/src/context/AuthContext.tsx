@@ -43,7 +43,7 @@ export const AuthProvider=({children}:AuthProviderProps)=>{
             localStorage.removeItem('user');
             localStorage.removeItem('token');
         } 
-    },[user])
+    },[])
 
     const login=(userData: User, jwt:string)=>{
         if(!userData) return;

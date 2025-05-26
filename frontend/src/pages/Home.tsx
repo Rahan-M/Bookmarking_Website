@@ -1,8 +1,7 @@
 import Navbar from "../components/navbar";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
-import { Link } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext} from "react";
 import axios from "axios";
 import Spinner from "../components/spinner";
 import SingleCard from "../components/SingleCard";
@@ -25,14 +24,17 @@ const Home = () => {
   const [folders, setFolders] = useState<folderType[]>([]);
   const [loading, setLoading] = useState(false);
   const {user}=useContext(AuthContext);
+  const navigate=useNavigate();
   
   
   useEffect(() => {
+    if(!user){
+      navigate('/login');
+    }
     if(user){
       setName(user.name);
       console.log("name set to ", user.name);
     }
-
     const fetchData=async()=>{
       setLoading(true);
       try{
@@ -50,7 +52,7 @@ const Home = () => {
     }
      
     fetchData();
-  }, [user]);
+  }, []);
 
   const handleDelete=(id:string)=>{
     setFolders((prevFLDs)=> prevFLDs.filter((fld) => fld._id!==id));

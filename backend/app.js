@@ -8,6 +8,7 @@ import cors from 'cors';
 dotenv.config();
 const app=express();
 
+
 app.use(express.json());
 const corsOptions = {
     origin: "http://localhost:5173", // Allow requests only from your frontend
