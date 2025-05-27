@@ -1,14 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FaUserCircle } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Link } from 'react-router-dom';
 import { IoIosArrowDropdown } from "react-icons/io";
+import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const [showDropDown, setShowDropDown]=useState(false);
+  const [dropDownPos, setDropDownPos]=useState({left:0, top:0});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const profileRef = useRef<HTMLDivElement | null>(null);
+  const {loggedIn, loadingAuth, logout}=useContext(AuthContext);
+  const [option2, setOption2]=useState(false);
+  const navigate=useNavigate();
 
   useEffect(()=>{ 
     /* 
@@ -18,6 +24,14 @@ const Navbar = () => {
       explicitly remove it (or the component unmounts and the cleanup 
       function runs)
     */
+    if(loggedIn){
+      setOption2(true);
+    }
+
+    if(profileRef.current){
+      const rect=profileRef.current.getBoundingClientRect();
+      setDropDownPos({left:rect.left-170, top:rect.bottom-10});
+    }
 
     const handleOutsideClick=(event: MouseEvent)=>{
       if(event.target instanceof Node &&
@@ -35,11 +49,25 @@ const Navbar = () => {
     return ()=>{ // Return function runs when component unmounts or when effect is rerun 
       document.removeEventListener("mousedown", handleOutsideClick);
     }
-  },[])
-  const AccountDropDown=()=>{
+  },[loadingAuth])
+
+  const handleLogout=()=>{
+    logout();
+    navigate('/login')
+  }
+
+  const AccountDropDownOption1=()=>{
     if(!showDropDown) return null;
     return (
-      <div ref={dropdownRef} className="bg-slate-300 w-[15rem] fixed right-7 z-10 top-9 text-center border border-solid border-black rounded-md">
+      <div 
+        ref={dropdownRef} 
+        className="bg-slate-300 w-[15rem] z-10 text-center border border-solid border-black rounded-md"
+        style={{
+          position:"fixed",
+          left:`${dropDownPos.left}px`,
+          top:`${dropDownPos.top}px`
+        }}
+        >
         <div className="menu">
           <div className="border-b border-dashed border-black">
             <Link to="/register">
@@ -54,7 +82,28 @@ const Navbar = () => {
         </div>
       </div>
     )
+  }  
+  const AccountDropDownOption2=()=>{
+    if(!showDropDown) return null;
+    return (
+      <div 
+        ref={dropdownRef} 
+        className="bg-slate-300 w-[15rem] z-10 text-center border border-solid border-black rounded-md"
+        style={{
+          position:"fixed",
+          left:`${dropDownPos.left}px`,
+          top:`${dropDownPos.top}px`
+        }}
+        >
+        <div className="menu">
+          <div>
+              <h1 className="h-[2rem] mt-2 cursor-pointer" onClick={handleLogout}>Logout</h1>
+          </div>
+        </div>
+      </div>
+    )
   }
+
   return (
     <>
     <div className="bg-gradient-to-br from-cyan-500 to-blue-500 flex justify-between h-14 items-center">
@@ -70,7 +119,8 @@ const Navbar = () => {
         <IoIosArrowDropdown className="text-2xl ml-2" color="white"/>
       </div>
     </div>
-    {AccountDropDown()}
+    {!option2 && AccountDropDownOption1()}
+    {option2 && AccountDropDownOption2()}
     </>
   );
 };

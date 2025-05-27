@@ -85,7 +85,7 @@ const loginUser=async(req, res)=>{
   try {
     if (!(req.body.email && req.body.password)) {
       return res
-        .status(400)
+        .status(200)
         .json({ success: false, code:0, msg: "Please fill all fields" });
     }
     const {email, password}=req.body;
@@ -105,11 +105,11 @@ const loginUser=async(req, res)=>{
         };
         return res.status(200).json({ success: true, data: returnData });
       } else {
-        return res.status(400).json({ success: false, code: 1, msg: "Incorrect Password" });
+        return res.status(200).json({ success: false, code: 1, msg: "Incorrect Password" });
       }
     }else{
       return res
-      .status(400)
+      .status(200)
       .json({ success: false, code:2, msg: "User Doesn't Exist" });
     }
     

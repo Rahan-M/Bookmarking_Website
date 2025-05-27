@@ -22,27 +22,36 @@ interface apiResponse{ // Single element in the array
 const Home = () => {
   const [name, setName]=useState("");
   const [folders, setFolders] = useState<folderType[]>([]);
-  const [loading, setLoading] = useState(false);
-  const {user}=useContext(AuthContext);
+  const [foldersExist, setFoldersExist] = useState(false);
   const navigate=useNavigate();
-  
+  const [loading, setLoading] = useState(false);
+  const {user, loggedIn, loadingAuth}=useContext(AuthContext);
   
   useEffect(() => {
-    if(!user){
-      navigate('/login');
-    }
-    if(user){
-      setName(user.name);
-      console.log("name set to ", user.name);
-    }
     const fetchData=async()=>{
+      if(loadingAuth) return;
+
+      if(!loggedIn){
+        console.log(loggedIn);
+        if(user)
+          console.log(user.name);
+        navigate('/login');
+        return;
+      }
+      
       setLoading(true);
+      setFoldersExist(false);
       try{
         const res=await axios
         .get<apiResponse>(
           `http://localhost:5000/api/folders`
         ) 
         const allFolders = res.data.data;
+        if(allFolders && allFolders.length>0){
+          setFoldersExist(true);
+          console.log(allFolders);
+          console.log(allFolders.length);
+        } 
         setFolders(allFolders);
       }catch(err){
         console.error(err);
@@ -52,10 +61,23 @@ const Home = () => {
     }
      
     fetchData();
-  }, []);
+  }, [loggedIn, loadingAuth]);
 
   const handleDelete=(id:string)=>{
     setFolders((prevFLDs)=> prevFLDs.filter((fld) => fld._id!==id));
+  }
+
+  const createBookmarksPrompt=()=>{
+    return(
+      <div className="fixed left-[50vw] -translate-x-1/2 right-[50vw] flex flex-col items-center justify-center h-[50vh] md:h-[30vh] w-[80vw] md:w-[30vw] border-4 rounded-3xl border-black mt-24 md:mt-12">
+        <h1 className="text-2xl text-center">You don't have any bookmarks yet<br/>Create some for them to popup</h1>
+        <Link to="/folders/create">
+          <button className="p-2 bg-sky-300 m-8 rounded-lg w-52 font-archivo text-slate-100 text-2xl" >
+              Create
+          </button>
+        </Link>
+      </div>
+    )
   }
 
   return (
@@ -70,11 +92,11 @@ const Home = () => {
       <div className='flex  flex-wrap mt-16 mx-auto max-w-[85%]'>
         {folders.map((folder)=>{
             return(
-                <SingleCard onDelete={handleDelete} folder={folder}/>
+                <SingleCard key={folder._id} onDelete={handleDelete} folder={folder}/>
             )
         })}
       </div>
-      {name && <h1>Hello {name}</h1>}
+        {!foldersExist && createBookmarksPrompt()}
     </div>
   );
 
