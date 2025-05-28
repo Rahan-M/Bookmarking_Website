@@ -16,12 +16,10 @@ const CreateFolder = () => {
   const { enqueueSnackbar } = useSnackbar();
   const {token, loggedIn}=useContext(AuthContext);
 
-  const shownRef = useRef(false);
   useEffect(()=>{
     if(!loggedIn){
       enqueueSnackbar("You Must Login to Save Bookmarks", {variant:'info'});
       navigate('/login');
-      shownRef.current=true;
     } 
   },[])
 
@@ -70,7 +68,7 @@ const CreateFolder = () => {
       <Navbar />
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-5xl font-bold mt-4 text-blue-600 font-oswald">
-          Create Book
+          Create Bookmark
         </h1>
         {loading && <Spinner />}
         <div className="flex flex-col items-center justify-center h-[50vh] md:h-[60vh] w-[80vw] md:w-[40vw] border-4 rounded-3xl border-black mt-24 md:mt-12">

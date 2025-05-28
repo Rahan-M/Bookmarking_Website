@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Spinner from '../components/spinner';
 import BookMarqCard from '../components/BookMarqCard';
+import { bookmarkApi } from '../apis/apis';
 interface bookMarqType{
     name: string;
     link:string;
@@ -26,9 +27,9 @@ const ViewFolder = () => {
       return;
     } 
     setLoading(true);
-    axios
+    bookmarkApi
     .get<apiResponse>(
-        `http://localhost:5000/api/bookmarks/folders/${name}`)
+        `/folders/${name}`)
         .then((res) => {
           const allBookmarks = res.data.data;
           setLoading(false);

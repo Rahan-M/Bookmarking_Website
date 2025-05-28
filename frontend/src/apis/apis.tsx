@@ -19,5 +19,12 @@ bookmarkApi.interceptors.request.use(config => {
   }
   return config;
 });
+folderApi.interceptors.request.use(config => {
+  const token = localStorage.getItem('token'); // Or from cookies, context, etc.
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export {bookmarkApi, folderApi, userApi};

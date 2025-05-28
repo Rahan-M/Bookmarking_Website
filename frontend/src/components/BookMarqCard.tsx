@@ -5,6 +5,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import Spinner from './spinner';
+import { bookmarkApi } from '../apis/apis';
 interface Props {
   bookMarq: {
     _id: string;
@@ -80,7 +81,7 @@ const BookMarqCard: React.FC<Props> = ({bookMarq, onDelete, onUpdate}) => {
     }
     try{
       setLoading2(true);
-      await axios.put(`http://localhost:5000/api/bookmarks/${bookMarq._id}`, data);
+      await bookmarkApi.put(`/${bookMarq._id}`, data);
       enqueueSnackbar("Bookmark Updated Succesfully", {variant : "success"});
       onUpdate(bookMarq._id, data);
     }

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineFolderDelete } from "react-icons/md";
 import { useSnackbar } from 'notistack';
+import { bookmarkApi, folderApi } from '../apis/apis';
 
 interface Props{
   folder: {
@@ -37,7 +38,7 @@ const SingleCard: React.FC<Props> = ({folder, onDelete}) => {
 
   useEffect(()=>{
     setLoading(true);
-    axios.get<apiResponse>(`http://localhost:5000/api/bookmarks/folders/${encodedFolder}`)
+    bookmarkApi.get<apiResponse>(`/folders/${encodedFolder}`)
     .then((res)=>{
       const allBookmarks = res.data.data;
       setBookMarks(allBookmarks);
@@ -64,12 +65,12 @@ const SingleCard: React.FC<Props> = ({folder, onDelete}) => {
   const handleDelete= async()=>{
     setLoading2(true);
     try{
-      await axios.delete(`http://localhost:5000/api/folders/${folder._id}`);
+      await folderApi.delete(`/${folder._id}`);
       enqueueSnackbar("Folder Deleted Succesfully", { variant: "success" });
       onDelete(folder._id);
     }
     catch(error){
-      console.error("Error deleting bookmark:", error);
+      console.error("Error deleting Folder:", error);
       enqueueSnackbar("An Error Occured. Try Again.", { variant: "error" });
     }
     finally{

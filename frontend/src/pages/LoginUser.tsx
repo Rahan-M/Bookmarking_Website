@@ -37,7 +37,7 @@ const LoginUser=()=>{
                 if(errorType==0){
                     enqueueSnackbar("Please fill all fields", { variant: "error" });
                 }else if(errorType==1){
-                    enqueueSnackbar("Incorrect password fields", { variant: "error" });
+                    enqueueSnackbar("Incorrect password", { variant: "error" });
                 }else if(errorType==2){
                     enqueueSnackbar("No account with this email was found", { variant: "error" });
                 }

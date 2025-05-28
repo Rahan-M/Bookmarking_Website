@@ -25,7 +25,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData=async()=>{
       if(loadingAuth) return;
-
+      
       if(!loggedIn){
         console.log(loggedIn);
         if(user)
@@ -36,6 +36,7 @@ const Home = () => {
       
       setLoading(true);
       setFoldersExist(false);
+      
       try{
         const res=await axios.get("http://localhost:5000/api/folders",{
           headers:{
@@ -51,6 +52,7 @@ const Home = () => {
           } 
           setFolders(allFolders);
         }else{
+          setFoldersExist(false);
           const errtype=res.data.code;
           if(errtype==0){
             enqueueSnackbar("No authorization header present");
@@ -75,7 +77,7 @@ const Home = () => {
   }, [loggedIn, loadingAuth]);
 
   const handleDelete=(id:string)=>{
-    setFolders((prevFLDs)=> prevFLDs.filter((fld) => fld._id!==id));
+    setFolders((prevFLDs)=> prevFLDs.filter((fld) => fld._id!==id)); // Using functional form of set folders
   }
 
   const createBookmarksPrompt=()=>{

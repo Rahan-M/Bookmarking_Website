@@ -129,8 +129,8 @@ const Navbar = () => {
         }
       })
       if(res.data.success){
-        logout();
         navigate("/register");
+        logout();
         enqueueSnackbar("Account Deleted Succesfully", { variant: "success" });
       }else if(res.data.code==0 || res.data.code==1){
         logout();
