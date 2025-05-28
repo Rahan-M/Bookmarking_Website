@@ -116,10 +116,40 @@ const deleteFolder = async (req, res) => {
     if (!id) {
       return res.status(400).json({ success: false, msg: "Please Proide Id" });
     }
-    const deletedFolder = await Folder.findByIdAndDelete(id);
-    const folderName = deletedFolder.name;
-    await BookMark.deleteMany({ folder: folderName });
-    res.status(200).json({ success: true, data: deletedFolder });
+    const authHeader=req.headers['authorization'];
+    if(!authHeader){
+      console.log("Hit!!!")
+      return res
+      .status(200)
+      .json({
+        success:false,
+        code:0,
+        msg:"No Header"
+      });
+    }
+    
+    const token=req.headers['authorization'].split(" ")[1];
+    const secret_key=process.env.SECRET_KEY;
+
+    try{
+      const decodedToken=jwt.verify(token, secret_key);
+      const deletedFolder = await Folder.findByIdAndDelete(id);
+      const folderName = deletedFolder.name;
+      await BookMark.deleteMany({ folder: folderName, user:decodedToken.id});
+      return res.status(200).json({ success: true, data: deletedFolder });
+      
+    }catch(err){
+      if(err.name=="TokenExpiredError"){
+        return res
+          .status(200)
+          .json({success:false, code:1, msg:"Token Expired"});
+      }else{
+        console.error(err);
+        return res
+          .status(200)
+          .json({success:false, code:2, msg:err});
+      }
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, msg: "Server Error" });

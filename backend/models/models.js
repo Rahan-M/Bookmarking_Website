@@ -6,6 +6,10 @@ const bookMarkSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    user:{
+      type:String,
+      required: true
+    },
     link: {
       type: String,
       required: true,

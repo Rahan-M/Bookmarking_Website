@@ -84,7 +84,7 @@ const deleteUser = async (req, res) => {
   
       const folders=await Folder.find({user:deletedUser._id.toString()});
       for (const folder of folders){
-        await BookMark.deleteMany({folder:folder.name});
+        await BookMark.deleteMany({folder:folder.name, user:decodedToken.id});
       }
 
       await Folder.deleteMany({user:deletedUser._id.toString()});
