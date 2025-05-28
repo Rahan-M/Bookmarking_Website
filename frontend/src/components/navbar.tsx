@@ -9,10 +9,11 @@ import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const [showDropDown, setShowDropDown]=useState(false);
+  const [name, setName]=useState("");
   const [dropDownPos, setDropDownPos]=useState({left:0, top:0});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const profileRef = useRef<HTMLDivElement | null>(null);
-  const {loggedIn, loadingAuth, logout}=useContext(AuthContext);
+  const {user, loggedIn, loadingAuth, logout}=useContext(AuthContext);
   const [option2, setOption2]=useState(false);
   const navigate=useNavigate();
 
@@ -24,9 +25,11 @@ const Navbar = () => {
       explicitly remove it (or the component unmounts and the cleanup 
       function runs)
     */
-    if(loggedIn){
+    if(loggedIn && user){
       setOption2(true);
+      setName(user.name);
     }
+
 
     if(profileRef.current){
       const rect=profileRef.current.getBoundingClientRect();
@@ -96,6 +99,9 @@ const Navbar = () => {
         }}
         >
         <div className="menu">
+          <div className="border-b border-dashed border-black">
+              <h1 className="h-[2rem] mt-2 ">Signed in a {name}</h1>
+          </div>
           <div>
               <h1 className="h-[2rem] mt-2 cursor-pointer" onClick={handleLogout}>Logout</h1>
           </div>

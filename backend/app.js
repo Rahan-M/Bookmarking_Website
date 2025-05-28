@@ -10,13 +10,17 @@ const app=express();
 
 
 app.use(express.json());
-const corsOptions = {
-    origin: "http://localhost:5173", // Allow requests only from your frontend
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true, // Allow cookies if needed
-  };
+
+// const corsOptions = {
+//     origin: "http://localhost:5173", // Allow requests only from your frontend
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true, // Allow cookies if needed
+//   };
   
-app.use(cors(corsOptions));
+app.use(cors());
+// app.use(cors(corsOptions));
+// app.options('*', cors(corsOptions)); // For preflight
 
 app.use('/api/bookmarks',bookmarksRouter);
 app.use('/api/folders',foldersRouter);

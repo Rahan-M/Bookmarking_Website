@@ -1,15 +1,44 @@
 import { BookMark, Folder } from "../models/models.js";
-
+import jwt from "jsonwebtoken";
 const getAllfolders = async (req, res) => {
   try {
-    const folders = await Folder.find({});
-    if (!folders) {
-      return res.status(400).json({
-        success: false,
-        msg: "Your folders will be visible once it's created",
-      });
+    try{
+      const authHeader=req.headers['authorization'];
+      if(!authHeader){
+        return res
+        .status(200)
+        .json({
+          success:false,
+          code:0,
+          msg:"No Header"
+        });
+      }
+      
+      const token=authHeader.split(" ")[1];
+      const secret_key=process.env.SECRET_KEY;
+      const decodedToken=jwt.verify(token, secret_key);
+      
+      const folders = await Folder.find({user:decodedToken.id});
+      if (!folders) {
+        return res.status(400).json({
+          success: false,
+          msg: "Your folders will be visible once it's created",
+        });
     }
     return res.status(200).json({ success: true, data: folders });
+    }catch(err){
+      if(err.name=="TokenExpiredError"){
+        return res
+          .status(200)
+          .json({success:false, code:1, msg:"Token Expired"});
+      }else{
+        console.error(err);
+        return res
+          .status(200)
+          .json({success:false, code:2, msg:"Invalid Token"});
+      }
+    }
+    
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, msg: "Server Error" });

@@ -5,8 +5,8 @@ import { useState, useEffect, useContext} from "react";
 import axios from "axios";
 import Spinner from "../components/spinner";
 import SingleCard from "../components/SingleCard";
-
 import { AuthContext } from "../context/AuthContext";
+import { enqueueSnackbar } from "notistack";
 
 interface folderType{
   _id:string;
@@ -14,18 +14,13 @@ interface folderType{
   count:number;
 }
 
-interface apiResponse{ // Single element in the array
-  data:folderType[];
-  success:boolean;
-}
 
 const Home = () => {
-  const [name, setName]=useState("");
   const [folders, setFolders] = useState<folderType[]>([]);
   const [foldersExist, setFoldersExist] = useState(false);
   const navigate=useNavigate();
   const [loading, setLoading] = useState(false);
-  const {user, loggedIn, loadingAuth}=useContext(AuthContext);
+  const {user, token, loggedIn, loadingAuth, logout}=useContext(AuthContext);
   
   useEffect(() => {
     const fetchData=async()=>{
@@ -42,17 +37,30 @@ const Home = () => {
       setLoading(true);
       setFoldersExist(false);
       try{
-        const res=await axios
-        .get<apiResponse>(
-          `http://localhost:5000/api/folders`
-        ) 
-        const allFolders = res.data.data;
-        if(allFolders && allFolders.length>0){
-          setFoldersExist(true);
-          console.log(allFolders);
-          console.log(allFolders.length);
-        } 
-        setFolders(allFolders);
+        const res=await axios.get("http://localhost:5000/api/folders",{
+          headers:{
+            Authorization: `Bearer ${token}`,
+          }
+        })
+        if(res.data.success){
+          const allFolders = res.data.data;
+          if(allFolders && allFolders.length>0){
+            setFoldersExist(true);
+            console.log(allFolders);
+            console.log(allFolders.length);
+          } 
+          setFolders(allFolders);
+        }else{
+          const errtype=res.data.code;
+          if(errtype==0){
+            enqueueSnackbar("No authorization header present");
+          }else{
+            logout();
+            navigate("/login");
+            console.log(errtype);
+            enqueueSnackbar("Your Session Has Expired");
+          }
+        }
       }catch(err){
         console.error(err);
       }finally{

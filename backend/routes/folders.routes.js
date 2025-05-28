@@ -1,6 +1,8 @@
 import { getAllfolders, deleteFolder, deleteAllFolders, renameFolder, getFolderId } from "../controllers/folders.controllers.js";
 import express from 'express';
 
+
+
 const router=express.Router();
 router.route('/').get(getAllfolders);
 router.route("/deleteAll").delete(deleteAllFolders);

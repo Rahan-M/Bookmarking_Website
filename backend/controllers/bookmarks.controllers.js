@@ -1,4 +1,5 @@
 import { BookMark, Folder } from "../models/models.js";
+import jwt from 'jsonwebtoken'
 
 const getBookMark = async (req, res) => {
   try {
@@ -49,32 +50,64 @@ const getFolder = async (req, res) => {
 
 const createBookMark = async (req, res) => {
   try {
-    if (!req.body.name || !req.body.link || !req.body.folder) {
+    if (!(req.body.name && req.body.link && req.body.folder )) {
       return res
         .status(400)
         .json({ success: false, msg: "Please fill all fields" });
     }
-    const requiredFolder = await Folder.findOne({ name: req.body.folder });
-    const newBookMark = await BookMark.create(req.body);
-    if (!requiredFolder) {
-      const folder = { name: req.body.folder, count: 1 };
-      const newFolder = await Folder.create(folder);
+
+    const authHeader=req.headers['authorization'];
+    if(!authHeader){
       return res
-        .status(200)
-        .json({ success: true, data: newBookMark, folder: newFolder });
+      .status(200)
+      .json({
+        success:false,
+        code:0,
+        msg:"No Header"
+      });
     }
 
-    const id = requiredFolder.id;
-    const updatedFolder = await Folder.findByIdAndUpdate(
-      id,
-      { $inc: { count: 1 } },
-      {
-        new: true,
+    const token=req.headers['authorization'].split(" ")[1];
+    const secret_key=process.env.SECRET_KEY;
+
+    try{
+      const decodedToken=jwt.verify(token, secret_key);
+      const requiredFolder = await Folder.findOne({ 
+        name: req.body.folder,
+        user: decodedToken.id
+      });
+      const newBookMark = await BookMark.create(req.body);
+      if (!requiredFolder) {
+        const folder = { name: req.body.folder, user:decodedToken.id, count: 1 };
+        const newFolder = await Folder.create(folder);
+        return res
+          .status(200)
+          .json({ success: true, data: newBookMark, folder: newFolder });
       }
-    );
-    return res
-      .status(200)
-      .json({ success: true, data: newBookMark, folder: updatedFolder });
+  
+      const id = requiredFolder.id;
+      const updatedFolder = await Folder.findByIdAndUpdate(
+        id,
+        { $inc: { count: 1 } },
+        {
+          new: true,
+        }
+      );
+      return res
+        .status(200)
+        .json({ success: true, data: newBookMark, folder: updatedFolder });
+    }catch(err){
+      if(err.name=="TokenExpiredError"){
+        return res
+          .status(200)
+          .json({success:false, code:0, msg:"Token Expired"});
+      }else{
+        console.error(err);
+        return res
+          .status(200)
+          .json({success:false, code:1, msg:"Invalid Token"});
+      }
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, msg: "Server Error" });

@@ -1,9 +1,10 @@
 import Navbar from "../components/navbar";
 import Spinner from "../components/spinner";
-import { useState } from "react";
-import axios from "axios";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
 
 //  Data Format Json {name, link, folder}
 const CreateFolder = () => {
@@ -13,26 +14,49 @@ const CreateFolder = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const saveBookMark = () => {
+  const {token, loggedIn}=useContext(AuthContext);
+
+  useEffect(()=>{
+    if(!loggedIn){
+      enqueueSnackbar("You Must Login to Save Bookmarks", {variant:'info'});
+      navigate('/login');
+      return;
+    } 
+  },[])
+
+  const saveBookMark =async () => {
+    if(!(name&&link&&folder)){
+      enqueueSnackbar("Fill all fields", {variant:'info'});
+    }
     const data = {
       name,
       link,
       folder,
     };
     setLoading(true);
-    axios
-      .post("http://localhost:5000/api/bookmarks", data)
-      .then(() => {
-        setLoading(false);
+    
+    try{
+      const res=await axios.post('http://localhost:5000/api/bookmarks', data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if(res.data.success){
         enqueueSnackbar("BookMarq Created Succesfully", { variant: "success" });
         navigate("/");
-      })
-      .catch((err) => {
-        setLoading(false);
-        enqueueSnackbar("An Error Occured", { variant: "error" });
-        console.log(err);
-      });
+      }else{
+        enqueueSnackbar("Your Session has Expired please log back in");
+        navigate("/login");
+      }
+    }catch (err){
+      enqueueSnackbar("An Error Occured", { variant: "error" });
+      console.log(err);
+    }finally{
+      setLoading(false);
+    }
+
   };
+
   return (
     <>
       <Navbar />
