@@ -1,4 +1,4 @@
-import { User } from "../models/models.js";
+import { User,Folder, BookMark } from "../models/models.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 
@@ -77,6 +77,18 @@ const deleteUser = async (req, res) => {
       const decodedToken=jwt.verify(token, secret_key);
       
       const deletedUser = await User.findByIdAndDelete(decodedToken.id);
+      if(!deletedUser)
+        return res
+      .status(400)
+      .json({success:false, msg:"User Not Found"});
+  
+      const folders=await Folder.find({user:deletedUser._id.toString()});
+      for (const folder of folders){
+        await BookMark.deleteMany({folder:folder.name});
+      }
+
+      await Folder.deleteMany({user:deletedUser._id.toString()});
+
       return res.status(200).json({ success: true });
     }catch(err){
       if(err.name=="TokenExpiredError"){
