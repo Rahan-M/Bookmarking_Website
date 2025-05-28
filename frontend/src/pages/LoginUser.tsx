@@ -80,7 +80,7 @@ const LoginUser=()=>{
                         className="border-2 border-gray-500 px-4 py-2 w-[70vw] md:w-96 mb-5"
                         />
                     </div>
-                    <h2>Don't have an account? <a className="text-blue-500" href="/login">Sign Up</a></h2>
+                    <h2>Don't have an account? <a className="text-blue-500" href="/register">Sign Up</a></h2>
                     <button className="p-2 bg-sky-300 m-8 rounded-lg w-52 font-archivo text-slate-100 text-2xl" onClick={loginUserFxn}>
                         Login
                     </button>

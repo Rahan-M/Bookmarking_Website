@@ -31,6 +31,11 @@ const createUser = async (req, res) => {
         .status(400)
         .json({ success: false, msg: "Please fill all fields" });
     }
+    const email=req.body.email;
+    const userExists=await User.findOne({email:email});
+    if(userExists){
+      return res.status(200).json({success:false, code:0, msg:"User Already Exists"})
+    }
     const hashedPassword=await hashPassword(req.body.password);
     const userData={
         name:req.body.name,
@@ -52,6 +57,45 @@ const createUser = async (req, res) => {
     return res.status(500).json({ success: false, msg: "Server Error While Registering User" });
   }
 };
+
+const deleteUser = async (req, res) => {
+  try {
+    try{
+      const authHeader=req.headers['authorization'];
+      if(!authHeader){
+        return res
+        .status(200)
+        .json({
+          success:false,
+          code:0,
+          msg:"No Header"
+        });
+      }
+      
+      const token=authHeader.split(" ")[1];
+      const secret_key=process.env.SECRET_KEY;
+      const decodedToken=jwt.verify(token, secret_key);
+      
+      const deletedUser = await User.findByIdAndDelete(decodedToken.id);
+      return res.status(200).json({ success: true });
+    }catch(err){
+      if(err.name=="TokenExpiredError"){
+        return res
+          .status(200)
+          .json({success:false, code:1, msg:"Token Expired"});
+      }else{
+        console.error(err);
+        return res
+          .status(200)
+          .json({success:false, code:2, msg:err});
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, msg: "Server Error While Registering User" });
+  }
+};
+
 
 const getAllUsers = async (req, res) => {
   try {
@@ -120,4 +164,4 @@ const loginUser=async(req, res)=>{
   }
 }
 
-export {createUser, deleteAllUsers, getAllUsers, loginUser};
+export {createUser, deleteAllUsers, getAllUsers, loginUser, deleteUser};

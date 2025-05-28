@@ -100,12 +100,12 @@ const createBookMark = async (req, res) => {
       if(err.name=="TokenExpiredError"){
         return res
           .status(200)
-          .json({success:false, code:0, msg:"Token Expired"});
+          .json({success:false, code:1, msg:"Token Expired"});
       }else{
         console.error(err);
         return res
           .status(200)
-          .json({success:false, code:1, msg:"Invalid Token"});
+          .json({success:false, code:2, msg:err});
       }
     }
   } catch (error) {

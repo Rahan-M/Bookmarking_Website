@@ -29,12 +29,21 @@ const RegisterUser=()=>{
             password:password1
         }
         setLoading(true);
+        // See if backend return status 400 or 500  because axios automatically throws an error
+        // it is handled by the catch, if it returns status 200 with success false, it must be handled by the try statement
         try{
             const res=await axios.post("http://localhost:5000/api/users", data);
-            const {token, user}=res.data.data; // This caused me so much trouble oh lord
-            login(user, token);
-            enqueueSnackbar("Registered Succesfully", { variant: "success" });
-            navigate('/');
+            if(res.data.success){
+                const {token, user}=res.data.data; // This caused me so much trouble oh lord
+                login(user, token);
+                enqueueSnackbar("Registered Succesfully", { variant: "success" });
+                navigate('/');
+            }else{
+                if(res.data.code==0){
+                    enqueueSnackbar("User with this email already exists, Login instead", { variant: "warning" });
+                    return;
+                }
+            }
         }catch (err){
             console.error("Error whilst registering", err);
             enqueueSnackbar("Registeration Failed, Try Again", { variant: "error" });

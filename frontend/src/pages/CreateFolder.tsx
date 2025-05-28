@@ -1,6 +1,6 @@
 import Navbar from "../components/navbar";
 import Spinner from "../components/spinner";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "../context/AuthContext";
@@ -16,11 +16,12 @@ const CreateFolder = () => {
   const { enqueueSnackbar } = useSnackbar();
   const {token, loggedIn}=useContext(AuthContext);
 
+  const shownRef = useRef(false);
   useEffect(()=>{
     if(!loggedIn){
       enqueueSnackbar("You Must Login to Save Bookmarks", {variant:'info'});
       navigate('/login');
-      return;
+      shownRef.current=true;
     } 
   },[])
 
@@ -41,12 +42,19 @@ const CreateFolder = () => {
           Authorization: `Bearer ${token}`
         }
       })
+      
       if(res.data.success){
         enqueueSnackbar("BookMarq Created Succesfully", { variant: "success" });
         navigate("/");
       }else{
-        enqueueSnackbar("Your Session has Expired please log back in");
-        navigate("/login");
+        const errtype=res.data.code;
+        if(errtype==0 || errtype==1){
+          enqueueSnackbar("Your Session has Expired please log back in");
+          navigate("/login");
+        }
+        else{
+          throw new Error(res.data.msg)
+        }
       }
     }catch (err){
       enqueueSnackbar("An Error Occured", { variant: "error" });

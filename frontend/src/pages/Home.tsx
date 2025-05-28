@@ -54,14 +54,17 @@ const Home = () => {
           const errtype=res.data.code;
           if(errtype==0){
             enqueueSnackbar("No authorization header present");
-          }else{
+          }else if(errtype==1){
             logout();
             navigate("/login");
             console.log(errtype);
             enqueueSnackbar("Your Session Has Expired");
+          }else{
+            throw new Error(res.data.msg);
           }
         }
       }catch(err){
+        enqueueSnackbar("An Error Occured", { variant: "error" });
         console.error(err);
       }finally{
         setLoading(false);

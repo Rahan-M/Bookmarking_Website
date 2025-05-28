@@ -35,7 +35,7 @@ const getAllfolders = async (req, res) => {
         console.error(err);
         return res
           .status(200)
-          .json({success:false, code:2, msg:"Invalid Token"});
+          .json({success:false, code:2, msg:err});
       }
     }
     
